@@ -105,3 +105,7 @@ claude plugin marketplace add /path/to/claude-mods
 ```
 
 It is then read in place: edits apply at the next session or `/reload-plugins`. Check a plugin with `claude plugin validate <folder>` and run its tests with `claude plugin test <folder>`.
+
+## License
+
+[MIT](LICENSE).

@@ -2,6 +2,14 @@
   "name": "worktree-terminal",
   "version": "0.1.0",
   "description": "/terminal: show or open a Terminal-panel tab in this conversation's git worktree (Claude desktop app)",
-  "author": { "name": "Charlie Morss" },
-  "keywords": ["worktree", "terminal", "git", "desktop"]
+  "author": {
+    "name": "Charlie Morss"
+  },
+  "license": "MIT",
+  "keywords": [
+    "worktree",
+    "terminal",
+    "git",
+    "desktop"
+  ]
 }
