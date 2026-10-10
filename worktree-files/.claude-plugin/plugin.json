@@ -1,0 +1,7 @@
+{
+  "name": "worktree-files",
+  "version": "0.1.0",
+  "description": "/worktree-files: open the filetree pane on this conversation's git worktree",
+  "author": { "name": "Charlie Morss" },
+  "keywords": ["worktree", "filetree", "git"]
+}
