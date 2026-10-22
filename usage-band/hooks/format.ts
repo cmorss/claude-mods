@@ -143,10 +143,13 @@ export function cacheTimeline(
   return { warm, left: 0, cold: of - warm }
 }
 
-/** How many of a 3×5 grid's dots each family lights: its place on the price ladder. */
-export const FAMILY_WEIGHT: Record<Family, number> = { fable: 15, opus: 10, sonnet: 6, haiku: 3 }
+/** How many of a 3×5 grid's dots a cost lights against the dearest cost shown: all for the dearest, none for nothing. */
+export function barDots(cost: number | null, max: number, of = 15): number {
+  if (cost === null || cost <= 0 || max <= 0) return 0
+  return Math.max(1, Math.min(of, Math.round((cost / max) * of)))
+}
 
-/** A 3×5 grid of dots, `lit` of them in `ink`, the rest faint: the glyph beside a model's cost. */
+/** A 3×5 grid of dots filled from the bottom like a bar, `lit` of them in `ink`, the rest faint. */
 export function gridSvg(lit: number, ink: string): string {
   const cols = 3
   const rows = 5
@@ -156,7 +159,7 @@ export function gridSvg(lit: number, ink: string): string {
   const h = rows * step
   let dots = ''
   let n = 0
-  for (let row = 0; row < rows; row += 1) {
+  for (let row = rows - 1; row >= 0; row -= 1) {
     for (let col = 0; col < cols; col += 1) {
       n += 1
       const isLit = n <= lit

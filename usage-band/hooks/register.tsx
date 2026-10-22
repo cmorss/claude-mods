@@ -7,12 +7,12 @@ import {
   BADGE_INK,
   BAR,
   FAMILIES,
-  FAMILY_WEIGHT,
   GLYPH_INK,
   PRICES,
   TTL_MS,
   YOU_INK,
   badgeSvg,
+  barDots,
   cacheTimeline,
   duration,
   gridSvg,
@@ -261,13 +261,18 @@ export const register: Register = (on, options) => {
       </Text>
     )
 
-    const costs = FAMILIES.map((f) => {
+    const priced = FAMILIES.map((f) => {
       const isYou = f === family
       const cost = contextTokens > 0 ? nextMessageCost(f, contextTokens, cacheTtl, isYou && heat === 'warm') : null
+      return { f, isYou, cost }
+    })
+    const dearest = Math.max(0, ...priced.map((x) => x.cost ?? 0))
+    const costs = priced.map(({ f, isYou, cost }) => {
+      const lit = barDots(cost, dearest)
       const glyph = isGraphical ? (
         <table.Svg
-          source={gridSvg(FAMILY_WEIGHT[f], isYou ? GLYPH_INK.you : GLYPH_INK.other)}
-          alt={`${PRICES[f].label}, ${FAMILY_WEIGHT[f]} of 15`}
+          source={gridSvg(lit, isYou ? GLYPH_INK.you : GLYPH_INK.other)}
+          alt={`${PRICES[f].label}, ${lit} of 15 against the dearest`}
           height={30}
         />
       ) : null

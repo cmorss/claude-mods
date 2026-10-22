@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { BADGE_INK, badgeSvg, cacheTimeline, duration, gridSvg, familyOf, filled, leftColor, money, nextMessageCost, percentLeft, resetText, tokens, warmth } from './format'
+import { BADGE_INK, badgeSvg, barDots, cacheTimeline, duration, gridSvg, familyOf, filled, leftColor, money, nextMessageCost, percentLeft, resetText, tokens, warmth } from './format'
 
 test('durations read like the status line', async () => {
   expect(duration(0)).toBe('<1m')
@@ -75,8 +75,16 @@ test('the cache timeline splits the bar between the warm hour and the cold time 
   expect(cacheTimeline(hour * 100, hour, 28)).toEqual({ warm: 1, left: 0, cold: 27 })
 })
 
-test('the cost glyph lights the family\'s share of fifteen dots', async () => {
-  const svg = gridSvg(10, '#3b9ddd')
+test('the cost bars light dots against the dearest cost, from the bottom up', async () => {
+  expect(barDots(3.37, 3.37)).toBe(15)
+  expect(barDots(1.68, 3.37)).toBe(7)
+  expect(barDots(0.11, 3.37)).toBe(1)
+  expect(barDots(0, 3.37)).toBe(0)
+  expect(barDots(null, 3.37)).toBe(0)
+  const svg = gridSvg(4, '#3b9ddd')
   expect(svg.split('<circle').length - 1).toBe(15)
-  expect(svg.split('#3b9ddd').length - 1).toBe(10)
+  expect(svg.split('#3b9ddd').length - 1).toBe(4)
+  // The first lit dot sits on the bottom row (cy of the fifth row), the first faint one above it.
+  const first = svg.indexOf('<circle')
+  expect(svg.slice(first, first + 60).includes('cy="27"')).toBe(true)
 })
