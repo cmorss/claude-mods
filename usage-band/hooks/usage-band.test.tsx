@@ -61,7 +61,7 @@ test('the band shows the windows, the cache state and the next cost, compact and
     // Every family is priced: Fable at $20/MTok, Haiku at $0.20/MTok.
     expect(await ui.find({ type: 'Text', text: /\$11\.94/ })).toBeDefined()
     expect(await ui.find({ type: 'Text', text: /\$0\.12/ })).toBeDefined()
-    expect(await ui.find({ type: 'Text', text: /session \$12\.50/ })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: /session so far \$12\.50/ })).toBeDefined()
     // Pressing again folds it, so the next surface starts compact.
     await ui.press({ key: 'toggle' })
     expect(await ui.find({ type: 'Text', text: /RE-CACHE/ })).toBeUndefined()
