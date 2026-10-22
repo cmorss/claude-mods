@@ -289,7 +289,6 @@ export const register: Register = (on, options) => {
       )
     })
 
-    const narrow = e.props.bodyColumns < 110
     const caption = (text: string) => (
       <Text size="caption" dimColor weight="semibold">
         {text}
@@ -309,7 +308,7 @@ export const register: Register = (on, options) => {
           <Box flexShrink={0}>{toggleButton}</Box>
         </Box>
 
-        <Box flexDirection={narrow ? 'column' : 'row'} gap="xl" alignItems="flex-start">
+        <Box flexDirection="row" flexWrap="wrap" gap="xl" alignItems="flex-start">
           <Box flexDirection="column" gap="xs" minWidth={32}>
             <Box flexDirection="row" gap="xs" alignItems="center">
               {badge}
