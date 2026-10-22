@@ -121,3 +121,50 @@ export function badgeSvg(label: string, colours: { fill: string; ink: string }):
     `</svg>`
   )
 }
+
+/** Dots in an expanded bar. */
+export const BAR = 28
+
+/**
+ * The cache timeline the expanded view draws, split into dots: while warm, how much of the
+ * TTL has elapsed and what is left; once cold, the warm hour against the time since it ended.
+ */
+export function cacheTimeline(
+  sinceRequest: number | null,
+  ttlMs: number,
+  of = BAR,
+): { warm: number; left: number; cold: number } {
+  if (sinceRequest === null) return { warm: 0, left: of, cold: 0 }
+  if (sinceRequest < ttlMs) {
+    const warm = Math.max(1, filled(sinceRequest / ttlMs, of))
+    return { warm, left: of - warm, cold: 0 }
+  }
+  const warm = Math.max(1, Math.min(of - 1, Math.round((of * ttlMs) / sinceRequest)))
+  return { warm, left: 0, cold: of - warm }
+}
+
+/** How many of a 3×5 grid's dots each family lights: its place on the price ladder. */
+export const FAMILY_WEIGHT: Record<Family, number> = { fable: 15, opus: 10, sonnet: 6, haiku: 3 }
+
+/** A 3×5 grid of dots, `lit` of them in `ink`, the rest faint: the glyph beside a model's cost. */
+export function gridSvg(lit: number, ink: string): string {
+  const cols = 3
+  const rows = 5
+  const step = 6
+  const r = 1.9
+  const w = cols * step
+  const h = rows * step
+  let dots = ''
+  let n = 0
+  for (let row = 0; row < rows; row += 1) {
+    for (let col = 0; col < cols; col += 1) {
+      n += 1
+      const isLit = n <= lit
+      dots += `<circle cx="${col * step + step / 2}" cy="${row * step + step / 2}" r="${r}" fill="${isLit ? ink : '#9aa0a6'}" opacity="${isLit ? 1 : 0.35}"/>`
+    }
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${dots}</svg>`
+}
+
+export const YOU_INK = { fill: '#8fd6ea', ink: '#0a2a33' }
+export const GLYPH_INK = { you: '#3b9ddd', other: '#9aa0a6' }

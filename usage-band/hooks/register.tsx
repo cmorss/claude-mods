@@ -5,11 +5,17 @@ import type { CacheMark, CacheTtl, Usage } from '../types'
 import {
   BADGE_HEIGHT,
   BADGE_INK,
+  BAR,
   FAMILIES,
+  FAMILY_WEIGHT,
+  GLYPH_INK,
   PRICES,
   TTL_MS,
+  YOU_INK,
   badgeSvg,
+  cacheTimeline,
   duration,
+  gridSvg,
   familyOf,
   filled,
   leftColor,
@@ -229,46 +235,69 @@ export const register: Register = (on, options) => {
       )
     }
 
-    // Expanded: a header with the windows, then three columns.
+    // Expanded: the header with the windows, then three columns: the cache, the re-cache, the costs.
     const ttlMs = TTL_MS[cacheTtl]
     const sinceRequest = m?.requestAt ? now - m.requestAt : null
-    const warmShare = sinceRequest === null ? 0 : Math.min(1, sinceRequest / ttlMs)
-    const warmDots = heat === 'warm' ? filled(1 - warmShare, DOTS) : 0
-    const warmLine = isWorking
-      ? `a request is in flight; the ${cacheTtl} cache timer restarts with it`
+    const line = cacheTimeline(isWorking ? 0 : sinceRequest, ttlMs, BAR)
+    const timelineLeft = `warm ${cacheTtl}`
+    const timelineRight = isWorking
+      ? 'request in flight'
       : heat === 'warm' && sinceRequest !== null
-        ? `cache holds ${duration(ttlMs - sinceRequest)} more`
+        ? `cold in ${duration(ttlMs - sinceRequest)}`
         : heat === 'cold' && sinceRequest !== null
-          ? `went cold ${duration(sinceRequest - ttlMs)} ago`
-          : 'no request yet this session'
+          ? `cold for ${duration(sinceRequest - ttlMs)}`
+          : 'no request yet'
 
     const fillShare = u?.percent !== null && u?.percent !== undefined ? u.percent / 100 : 0
-    const fillDots = filled(fillShare, DOTS)
+    const fillDots = filled(fillShare, BAR)
     const windowText = u ? `${u.percent ?? 0}% of the ${fmtTokens(u.window)} context` : 'context not measured yet'
+
+    const isGraphical = e.surface !== 'terminal' && 'Svg' in table
+    const youPill = isGraphical ? (
+      <table.Svg source={badgeSvg('YOU', YOU_INK)} alt="YOU" height={BADGE_HEIGHT} />
+    ) : (
+      <Text inverse color="ide" weight="semibold">
+        {' '}
+        YOU{' '}
+      </Text>
+    )
 
     const costs = FAMILIES.map((f) => {
       const isYou = f === family
       const cost = contextTokens > 0 ? nextMessageCost(f, contextTokens, cacheTtl, isYou && heat === 'warm') : null
+      const glyph = isGraphical ? (
+        <table.Svg
+          source={gridSvg(FAMILY_WEIGHT[f], isYou ? GLYPH_INK.you : GLYPH_INK.other)}
+          alt={`${PRICES[f].label}, ${FAMILY_WEIGHT[f]} of 15`}
+          height={30}
+        />
+      ) : null
       return (
-        <Box key={`cost-${f}`} flexDirection="column" alignItems="flex-start" minWidth={10}>
-          <Text size="caption" color={isYou ? 'ide' : 'subtle'} weight="semibold" inverse={isYou}>
-            {isYou ? ' YOU ' : ' '}
-          </Text>
-          <Text weight={isYou ? 'bold' : 'regular'} size={isYou ? 'heading' : 'body'} tabular>
-            {cost === null ? '—' : money(cost)}
-          </Text>
-          <Text size="caption" dimColor>
-            {PRICES[f].label}
-            {isYou && heat === 'warm' ? ' · read' : ''}
-          </Text>
+        <Box key={`cost-${f}`} flexDirection="row" gap="xs" alignItems="flex-end">
+          {glyph}
+          <Box flexDirection="column" alignItems="flex-start">
+            {isYou ? youPill : <Text size="caption"> </Text>}
+            <Text weight={isYou ? 'bold' : 'semibold'} size="heading" color={isYou ? 'text' : 'subtle'} tabular>
+              {cost === null ? '—' : money(cost)}
+            </Text>
+            <Text size="caption" dimColor>
+              {PRICES[f].label}
+              {isYou && heat === 'warm' ? ' · read' : ''}
+            </Text>
+          </Box>
         </Box>
       )
     })
 
-    const narrow = e.props.bodyColumns < 96
+    const narrow = e.props.bodyColumns < 110
+    const caption = (text: string) => (
+      <Text size="caption" dimColor weight="semibold">
+        {text}
+      </Text>
+    )
 
     return wrap(
-      <Box flexDirection="column" gap="sm">
+      <Box flexDirection="column" gap="md">
         <Box flexDirection="row" gap="md" alignItems="flex-start" justifyContent="space-between">
           <Box flexDirection="row" gap="md" alignItems="center" flexWrap="wrap" flexGrow={1} flexShrink={1}>
             <Text weight="bold">USAGE</Text>
@@ -280,58 +309,62 @@ export const register: Register = (on, options) => {
           <Box flexShrink={0}>{toggleButton}</Box>
         </Box>
 
-        <Box flexDirection={narrow ? 'column' : 'row'} gap="lg" alignItems="flex-start">
-          <Box flexDirection="column" gap="xs" minWidth={28}>
+        <Box flexDirection={narrow ? 'column' : 'row'} gap="xl" alignItems="flex-start">
+          <Box flexDirection="column" gap="xs" minWidth={32}>
             <Box flexDirection="row" gap="xs" alignItems="center">
               {badge}
-              <Text size="caption" dimColor weight="semibold">
-                {isWorking ? 'REQUEST RUNNING' : 'IDLE FOR'}
-              </Text>
+              {caption(isWorking ? 'REQUEST' : 'IDLE')}
             </Box>
             <Text size="title" weight="bold" tabular>
               {idleText}
             </Text>
-            <Box flexDirection="row" gap="xs" alignItems="center">
-              <Text color="success" size="caption">
-                {DOT.repeat(warmDots)}
+            <Box flexDirection="row" alignItems="center">
+              <Text color="warning" size="caption">
+                {DOT.repeat(line.warm)}
               </Text>
               <Text dimColor size="caption">
-                {GAP_DOT.repeat(DOTS - warmDots)}
+                {GAP_DOT.repeat(line.left + Math.max(0, line.cold - 1))}
               </Text>
-              <Text size="caption" dimColor>
-                {warmLine}
+              {line.cold > 0 ? (
+                <Text color="ide" size="caption">
+                  {DOT}
+                </Text>
+              ) : null}
+            </Box>
+            <Box flexDirection="row" justifyContent="space-between" gap="md">
+              <Text size="caption" color="warning">
+                {timelineLeft}
+              </Text>
+              <Text size="caption" color={heat === 'cold' ? 'ide' : 'subtle'}>
+                {timelineRight}
               </Text>
             </Box>
           </Box>
 
-          <Box flexDirection="column" gap="xs" minWidth={28}>
-            <Text size="caption" dimColor weight="semibold">
-              RE-CACHE
-            </Text>
+          <Box flexDirection="column" gap="xs" minWidth={32}>
+            {caption('RE-CACHE')}
             <Box flexDirection="row" gap="xs" alignItems="flex-end">
               <Text size="title" weight="bold" tabular>
                 {contextTokens > 0 ? fmtTokens(contextTokens) : '—'}
               </Text>
               <Text dimColor>tokens</Text>
             </Box>
-            <Box flexDirection="row" gap="xs" alignItems="center">
+            <Box flexDirection="row" alignItems="center">
               <Text color="ide" size="caption">
                 {DOT.repeat(fillDots)}
               </Text>
               <Text dimColor size="caption">
-                {GAP_DOT.repeat(DOTS - fillDots)}
-              </Text>
-              <Text size="caption" dimColor>
-                {windowText}
+                {GAP_DOT.repeat(BAR - fillDots)}
               </Text>
             </Box>
+            <Text size="caption" dimColor>
+              {windowText}
+            </Text>
           </Box>
 
           <Box flexDirection="column" gap="xs">
-            <Text size="caption" dimColor weight="semibold">
-              NEXT MESSAGE COSTS {heat === 'warm' && family ? '(yours at the cache-read rate)' : `(${cacheTtl} cache write)`}
-            </Text>
-            <Box flexDirection="row" gap="md" alignItems="flex-start" flexWrap="wrap">
+            {caption(`NEXT MESSAGE COSTS${heat === 'warm' && family ? ' · yours at the cache-read rate' : ` · ${cacheTtl} cache write`}`)}
+            <Box flexDirection="row" gap="lg" alignItems="flex-end" flexWrap="wrap">
               {costs}
             </Box>
           </Box>

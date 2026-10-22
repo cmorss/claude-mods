@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { BADGE_INK, badgeSvg, duration, familyOf, filled, leftColor, money, nextMessageCost, percentLeft, resetText, tokens, warmth } from './format'
+import { BADGE_INK, badgeSvg, cacheTimeline, duration, gridSvg, familyOf, filled, leftColor, money, nextMessageCost, percentLeft, resetText, tokens, warmth } from './format'
 
 test('durations read like the status line', async () => {
   expect(duration(0)).toBe('<1m')
@@ -64,4 +64,19 @@ test('the badge is a rounded pill with its label', async () => {
   expect(svg.includes('rx="9"')).toBe(true)
   expect(svg.includes('>COLD<')).toBe(true)
   expect(badgeSvg('A<B', BADGE_INK.warm).includes('A&lt;B')).toBe(true)
+})
+
+test('the cache timeline splits the bar between the warm hour and the cold time after', async () => {
+  const hour = 3_600_000
+  expect(cacheTimeline(null, hour, 28)).toEqual({ warm: 0, left: 28, cold: 0 })
+  expect(cacheTimeline(hour / 2, hour, 28)).toEqual({ warm: 14, left: 14, cold: 0 })
+  expect(cacheTimeline(0, hour, 28)).toEqual({ warm: 1, left: 27, cold: 0 })
+  expect(cacheTimeline(hour * 4, hour, 28)).toEqual({ warm: 7, left: 0, cold: 21 })
+  expect(cacheTimeline(hour * 100, hour, 28)).toEqual({ warm: 1, left: 0, cold: 27 })
+})
+
+test('the cost glyph lights the family\'s share of fifteen dots', async () => {
+  const svg = gridSvg(10, '#3b9ddd')
+  expect(svg.split('<circle').length - 1).toBe(15)
+  expect(svg.split('#3b9ddd').length - 1).toBe(10)
 })
