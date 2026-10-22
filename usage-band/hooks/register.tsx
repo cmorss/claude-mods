@@ -318,7 +318,14 @@ export const register: Register = (on, options) => {
             <Text weight="bold">USAGE</Text>
             {windows.length > 0 ? windows : <Text dimColor>no usage windows yet</Text>}
           </Box>
-          <Box flexShrink={0}>{toggleButton}</Box>
+          <Box flexDirection="row" gap="md" alignItems="center" flexShrink={0}>
+            {u?.costUsd !== null && u?.costUsd !== undefined ? (
+              <Text dimColor tabular>
+                <Text weight="semibold">SESSION</Text> {money(u.costUsd)}
+              </Text>
+            ) : null}
+            {toggleButton}
+          </Box>
         </Box>
 
         <Box flexDirection="row" flexWrap="wrap" gap="xl" alignItems="flex-start">
@@ -375,10 +382,7 @@ export const register: Register = (on, options) => {
           </Box>
 
           <Box flexDirection="column" gap="xs">
-            {caption(
-              `NEXT MESSAGE COSTS${heat === 'warm' && family ? ' · yours at the cache-read rate' : ` · ${cacheTtl} cache write`}` +
-                (u?.costUsd !== null && u?.costUsd !== undefined ? ` · session so far ${money(u.costUsd)}` : ''),
-            )}
+            {caption('NEXT MESSAGE COSTS')}
             <Box flexDirection="row" gap="lg" alignItems="flex-end" flexWrap="wrap">
               {costs}
             </Box>
