@@ -1,0 +1,19 @@
+usage-band/hooks/register.tsx
+  s_c5731849a71edc::t_b6cded8348f72e 311
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0a45918f907e18366c0f84f8484dda624b5ad762",
+  "prompts": {},
+  "sessions": {
+    "s_c5731849a71edc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "355975bc-061e-48aa-87f0-df3e8d9e9669",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Charlie Morss <charlie.morss@gmail.com>"
+    }
+  }
+}
