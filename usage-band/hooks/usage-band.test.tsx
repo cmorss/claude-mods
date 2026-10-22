@@ -43,8 +43,10 @@ test('the band shows the windows, the cache state and the next cost, compact and
     expect(await ui.find({ type: 'Text', text: /3d 10h/ })).toBeDefined()
     expect(await ui.find({ type: 'Text', text: /89% left/ })).toBeDefined()
     expect(await ui.find({ type: 'Text', text: /resetting/ })).toBeDefined()
-    // No request yet: the cost is the 1-hour cache write on Opus, 597k × $8/MTok.
-    expect(await ui.find({ type: 'Text', text: /NO CACHE/ })).toBeDefined()
+    // No request yet: the badge says so (a pill on the desktop, a run on the terminal), and the
+    // cost is the 1-hour cache write on Opus, 597k × $8/MTok.
+    if (surface === 'terminal') expect(await ui.find({ type: 'Text', text: /NO CACHE/ })).toBeDefined()
+    else expect(await ui.find({ type: 'Svg' })).toBeDefined()
     expect(await ui.find({ type: 'Text', text: /\$4\.78/ })).toBeDefined()
     expect(await ui.find({ type: 'Text', text: /RE-CACHE/ })).toBeUndefined()
     await ui.unmount()

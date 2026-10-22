@@ -1,6 +1,6 @@
 import { expect, test } from 'claude-code/testing'
 
-import { duration, familyOf, filled, leftColor, money, nextMessageCost, percentLeft, resetText, tokens, warmth } from './format'
+import { BADGE_INK, badgeSvg, duration, familyOf, filled, leftColor, money, nextMessageCost, percentLeft, resetText, tokens, warmth } from './format'
 
 test('durations read like the status line', async () => {
   expect(duration(0)).toBe('<1m')
@@ -56,4 +56,12 @@ test('warmth follows the TTL from the request start', async () => {
   expect(warmth(at, '1h', at + 59 * 60_000)).toBe('warm')
   expect(warmth(at, '1h', at + 61 * 60_000)).toBe('cold')
   expect(warmth(at, '5m', at + 6 * 60_000)).toBe('cold')
+})
+
+test('the badge is a rounded pill with its label', async () => {
+  const svg = badgeSvg('COLD', BADGE_INK.cold)
+  expect(svg.startsWith('<svg ')).toBe(true)
+  expect(svg.includes('rx="9"')).toBe(true)
+  expect(svg.includes('>COLD<')).toBe(true)
+  expect(badgeSvg('A<B', BADGE_INK.warm).includes('A&lt;B')).toBe(true)
 })

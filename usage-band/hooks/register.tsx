@@ -3,9 +3,12 @@ import type { EngineInterface, Register, RenderElement, SessionUsage } from 'cla
 
 import type { CacheMark, CacheTtl, Usage } from '../types'
 import {
+  BADGE_HEIGHT,
+  BADGE_INK,
   FAMILIES,
   PRICES,
   TTL_MS,
+  badgeSvg,
   duration,
   familyOf,
   filled,
@@ -134,7 +137,8 @@ export const register: Register = (on, options) => {
     const now = await $.clock.now()
     const isWorking = e.props.isWorking
 
-    const { Box, Text, Button } = $.ui.resolve(e)
+    const table = $.ui.resolve(e)
+    const { Box, Text, Button } = table
     const wrap = (band: RenderElement): RenderElement =>
       below === null ? (
         band
@@ -162,6 +166,7 @@ export const register: Register = (on, options) => {
     const yourCost =
       family && contextTokens > 0 ? nextMessageCost(family, contextTokens, cacheTtl, heat === 'warm') : null
 
+    const sayResets = expanded
     const windows = (u?.windows ?? []).map((w) => {
       const left = percentLeft(w)
       const color = leftColor(left)
@@ -172,24 +177,32 @@ export const register: Register = (on, options) => {
           <Text weight="semibold" dimColor>
             {windowLabel(w.kind)}
           </Text>
-          <Text color={color}>{DOT.repeat(n)}</Text>
-          <Text dimColor>{GAP_DOT.repeat(DOTS - n)}</Text>
+          <Text color={color} size="caption">
+            {DOT.repeat(n)}
+          </Text>
+          <Text dimColor size="caption">
+            {GAP_DOT.repeat(DOTS - n)}
+          </Text>
           <Text color={color} weight="semibold" tabular>
             {left}% left
           </Text>
-          {reset ? <Text dimColor>· {reset}</Text> : null}
+          {reset ? <Text dimColor>· {reset === 'resetting' || !sayResets ? reset : `resets in ${reset}`}</Text> : null}
         </Box>
       )
     })
 
     const heatLabel = isWorking ? 'WORKING' : heat === 'warm' ? 'WARM' : heat === 'cold' ? 'COLD' : 'NO CACHE'
     const heatColor = heat === 'warm' ? 'success' : heat === 'cold' ? 'ide' : 'subtle'
-    const badge = (
-      <Text inverse color={heatColor} weight="semibold">
-        {' '}
-        {heatLabel}{' '}
-      </Text>
-    )
+    // The terminal draws the badge as an inverse run; a graphical surface as a rounded pill.
+    const badge =
+      e.surface !== 'terminal' && 'Svg' in table ? (
+        <table.Svg source={badgeSvg(heatLabel, BADGE_INK[heat])} alt={heatLabel} height={BADGE_HEIGHT} />
+      ) : (
+        <Text inverse color={heatColor} weight="semibold">
+          {' '}
+          {heatLabel}{' '}
+        </Text>
+      )
     const idleText = isWorking ? 'now' : idleMs === null ? '—' : duration(idleMs)
 
     const toggleButton = (
@@ -199,16 +212,16 @@ export const register: Register = (on, options) => {
     if (!expanded) {
       // The button keeps its place at the right end: the figures wrap, it never does.
       return wrap(
-        <Box flexDirection="row" gap="md" alignItems="flex-start" justifyContent="space-between">
-          <Box flexDirection="row" gap="md" alignItems="center" flexWrap="wrap" flexGrow={1} flexShrink={1}>
+        <Box flexDirection="row" gap="sm" alignItems="center" justifyContent="space-between">
+          <Box flexDirection="row" gap="sm" alignItems="center" flexWrap="nowrap" flexGrow={1} flexShrink={1} overflow="hidden">
             <Text weight="bold">USAGE</Text>
             {windows.length > 0 ? windows : <Text dimColor>no usage windows yet</Text>}
-            <Box flexDirection="row" gap="xs" alignItems="center">
+            <Box flexDirection="row" gap="xs" alignItems="center" flexShrink={0}>
               {badge}
               <Text weight="semibold" tabular>
                 {idleText}
               </Text>
-              {yourCost !== null ? <Text dimColor>· next {money(yourCost)}</Text> : null}
+              {yourCost !== null ? <Text dimColor>· {money(yourCost)}</Text> : null}
             </Box>
           </Box>
           <Box flexShrink={0}>{toggleButton}</Box>
@@ -272,15 +285,19 @@ export const register: Register = (on, options) => {
             <Box flexDirection="row" gap="xs" alignItems="center">
               {badge}
               <Text size="caption" dimColor weight="semibold">
-                {isWorking ? 'REQUEST' : 'IDLE'}
+                {isWorking ? 'REQUEST RUNNING' : 'IDLE FOR'}
               </Text>
             </Box>
             <Text size="title" weight="bold" tabular>
               {idleText}
             </Text>
             <Box flexDirection="row" gap="xs" alignItems="center">
-              <Text color="success">{DOT.repeat(warmDots)}</Text>
-              <Text dimColor>{GAP_DOT.repeat(DOTS - warmDots)}</Text>
+              <Text color="success" size="caption">
+                {DOT.repeat(warmDots)}
+              </Text>
+              <Text dimColor size="caption">
+                {GAP_DOT.repeat(DOTS - warmDots)}
+              </Text>
               <Text size="caption" dimColor>
                 {warmLine}
               </Text>
@@ -298,8 +315,12 @@ export const register: Register = (on, options) => {
               <Text dimColor>tokens</Text>
             </Box>
             <Box flexDirection="row" gap="xs" alignItems="center">
-              <Text color="ide">{DOT.repeat(fillDots)}</Text>
-              <Text dimColor>{GAP_DOT.repeat(DOTS - fillDots)}</Text>
+              <Text color="ide" size="caption">
+                {DOT.repeat(fillDots)}
+              </Text>
+              <Text dimColor size="caption">
+                {GAP_DOT.repeat(DOTS - fillDots)}
+              </Text>
               <Text size="caption" dimColor>
                 {windowText}
               </Text>

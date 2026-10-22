@@ -100,3 +100,24 @@ export function warmth(requestAt: number | null, ttl: CacheTtl, now: number): Wa
   if (requestAt === null) return 'unknown'
   return now - requestAt < TTL_MS[ttl] ? 'warm' : 'cold'
 }
+
+/** The badge's colours per cache state: a pale fill with dark ink reads on a light or a dark theme. */
+export const BADGE_INK: Record<Warmth, { fill: string; ink: string }> = {
+  warm: { fill: '#9fe0b4', ink: '#0d2d18' },
+  cold: { fill: '#8fd6ea', ink: '#0a2a33' },
+  unknown: { fill: '#c9ccd1', ink: '#23262b' },
+}
+
+export const BADGE_HEIGHT = 18
+
+/** A rounded pill with the label in it, as the desktop draws it. */
+export function badgeSvg(label: string, colours: { fill: string; ink: string }): string {
+  const width = Math.round(14 + label.length * 7.4)
+  const text = label.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${BADGE_HEIGHT}" viewBox="0 0 ${width} ${BADGE_HEIGHT}">` +
+    `<rect width="${width}" height="${BADGE_HEIGHT}" rx="${BADGE_HEIGHT / 2}" fill="${colours.fill}"/>` +
+    `<text x="${width / 2}" y="12.5" text-anchor="middle" font-family="-apple-system, 'Inter Tight', 'Helvetica Neue', sans-serif" font-size="10.5" font-weight="700" letter-spacing="0.8" fill="${colours.ink}">${text}</text>` +
+    `</svg>`
+  )
+}
