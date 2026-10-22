@@ -236,7 +236,14 @@ export const register: Register = (on, options) => {
               {yourCost !== null ? <Text dimColor>· {money(yourCost)}</Text> : null}
             </Box>
           </Box>
-          <Box flexShrink={0}>{toggleButton}</Box>
+          <Box flexDirection="row" gap="md" alignItems="center" flexShrink={0}>
+            {u?.costUsd !== null && u?.costUsd !== undefined ? (
+              <Text dimColor tabular>
+                session {money(u.costUsd)}
+              </Text>
+            ) : null}
+            {toggleButton}
+          </Box>
         </Box>
       )
     }

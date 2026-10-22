@@ -48,6 +48,7 @@ test('the band shows the windows, the cache state and the next cost, compact and
     if (surface === 'terminal') expect(await ui.find({ type: 'Text', text: /NO CACHE/ })).toBeDefined()
     else expect(await ui.find({ type: 'Svg' })).toBeDefined()
     expect(await ui.find({ type: 'Text', text: /\$4\.78/ })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: /session \$12\.50/ })).toBeDefined()
     expect(await ui.find({ type: 'Text', text: /RE-CACHE/ })).toBeUndefined()
     await ui.unmount()
   }
