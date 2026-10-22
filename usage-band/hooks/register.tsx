@@ -186,18 +186,21 @@ export const register: Register = (on, options) => {
     )
 
     if (!expanded) {
+      // The button keeps its place at the right end: the figures wrap, it never does.
       return (
-        <Box flexDirection="row" gap="md" alignItems="center" flexWrap="wrap">
-          <Text weight="bold">USAGE</Text>
-          {windows.length > 0 ? windows : <Text dimColor>no usage windows yet</Text>}
-          <Box flexDirection="row" gap="xs" alignItems="center">
-            {badge}
-            <Text weight="semibold" tabular>
-              {idleText}
-            </Text>
-            {yourCost !== null ? <Text dimColor>· next {money(yourCost)}</Text> : null}
+        <Box flexDirection="row" gap="md" alignItems="flex-start" justifyContent="space-between">
+          <Box flexDirection="row" gap="md" alignItems="center" flexWrap="wrap" flexGrow={1} flexShrink={1}>
+            <Text weight="bold">USAGE</Text>
+            {windows.length > 0 ? windows : <Text dimColor>no usage windows yet</Text>}
+            <Box flexDirection="row" gap="xs" alignItems="center">
+              {badge}
+              <Text weight="semibold" tabular>
+                {idleText}
+              </Text>
+              {yourCost !== null ? <Text dimColor>· next {money(yourCost)}</Text> : null}
+            </Box>
           </Box>
-          {toggleButton}
+          <Box flexShrink={0}>{toggleButton}</Box>
         </Box>
       )
     }
@@ -242,15 +245,15 @@ export const register: Register = (on, options) => {
 
     return (
       <Box flexDirection="column" gap="sm">
-        <Box flexDirection="row" gap="md" alignItems="center" flexWrap="wrap" justifyContent="space-between">
-          <Box flexDirection="row" gap="md" alignItems="center" flexWrap="wrap">
+        <Box flexDirection="row" gap="md" alignItems="flex-start" justifyContent="space-between">
+          <Box flexDirection="row" gap="md" alignItems="center" flexWrap="wrap" flexGrow={1} flexShrink={1}>
             <Text weight="bold">USAGE</Text>
             {windows.length > 0 ? windows : <Text dimColor>no usage windows yet</Text>}
             {u?.costUsd !== null && u?.costUsd !== undefined ? (
               <Text dimColor>session {money(u.costUsd)}</Text>
             ) : null}
           </Box>
-          {toggleButton}
+          <Box flexShrink={0}>{toggleButton}</Box>
         </Box>
 
         <Box flexDirection={narrow ? 'column' : 'row'} gap="lg" alignItems="flex-start">
