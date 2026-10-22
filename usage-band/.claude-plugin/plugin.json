@@ -1,0 +1,35 @@
+{
+  "name": "usage-band",
+  "version": "0.1.0",
+  "description": "A band above the prompt with your usage windows, the prompt cache's warmth and age, the context to re-cache and what the next message costs per model",
+  "author": {
+    "name": "Charlie Morss"
+  },
+  "license": "MIT",
+  "keywords": [
+    "usage",
+    "cost",
+    "cache",
+    "rate-limit",
+    "desktop"
+  ],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "cacheTtl": {
+      "type": "string",
+      "description": "Prompt cache TTL the band assumes when settings and the engine say nothing: 1h on a Claude subscription, 5m on an API key",
+      "options": [
+        "1h",
+        "5m"
+      ],
+      "default": "1h",
+      "title": "Cache TTL"
+    },
+    "tickSeconds": {
+      "type": "number",
+      "description": "How often the idle timer redraws, in seconds",
+      "default": 30,
+      "title": "Redraw every (seconds)"
+    }
+  }
+}

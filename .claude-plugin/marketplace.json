@@ -1,7 +1,9 @@
 {
   "name": "claude-mods",
   "description": "Claude Code mods for working in git worktrees: a terminal and a file tree for the worktree a conversation works in",
-  "owner": { "name": "Charlie Morss" },
+  "owner": {
+    "name": "Charlie Morss"
+  },
   "plugins": [
     {
       "name": "worktree-terminal",
@@ -12,6 +14,11 @@
       "name": "worktree-files",
       "source": "./worktree-files",
       "description": "/worktree-files: open the filetree pane on the conversation's git worktree"
+    },
+    {
+      "name": "usage-band",
+      "source": "./usage-band",
+      "description": "A band above the prompt: usage windows, prompt-cache warmth and age, context to re-cache, next message cost per model"
     }
   ]
 }
