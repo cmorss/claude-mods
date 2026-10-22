@@ -1,0 +1,19 @@
+usage-band/hooks/register.tsx
+  s_8cad2d86931f73::t_88b58380b13ab3 189,191-201,203,248-249,256
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9803bcd440e97288f7d33dc8200c4b590b904909",
+  "prompts": {},
+  "sessions": {
+    "s_8cad2d86931f73": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "be60143d-3c42-4a18-9e54-c47522d59fd8",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Charlie Morss <charlie.morss@gmail.com>"
+    }
+  }
+}
