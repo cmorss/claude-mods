@@ -178,7 +178,7 @@ export const register: Register = (on, options) => {
       const n = filled(left / 100, DOTS)
       const reset = resetText(w, now)
       return (
-        <Box key={`win-${w.kind}`} flexDirection="row" gap="xs" alignItems="center">
+        <Box key={`win-${w.kind}`} flexDirection="row" gap="xs" alignItems="center" flexShrink={0}>
           <Text weight="semibold" dimColor>
             {windowLabel(w.kind)}
           </Text>
@@ -196,7 +196,7 @@ export const register: Register = (on, options) => {
       )
     })
 
-    const heatLabel = isWorking ? 'WORKING' : heat === 'warm' ? 'WARM' : heat === 'cold' ? 'COLD' : 'NO CACHE'
+    const heatLabel = isWorking ? 'BUSY' : heat === 'warm' ? 'WARM' : heat === 'cold' ? 'COLD' : 'NO CACHE'
     const heatColor = heat === 'warm' ? 'success' : heat === 'cold' ? 'ide' : 'subtle'
     // The terminal draws the badge as an inverse run; a graphical surface as a rounded pill.
     const badge =
@@ -208,7 +208,14 @@ export const register: Register = (on, options) => {
           {heatLabel}{' '}
         </Text>
       )
-    const idleText = isWorking ? 'now' : idleMs === null ? '—' : duration(idleMs)
+    const runningMs = m?.requestAt !== null && m?.requestAt !== undefined ? now - m.requestAt : null
+    const idleText = isWorking
+      ? runningMs === null
+        ? 'now'
+        : duration(runningMs)
+      : idleMs === null
+        ? '—'
+        : duration(idleMs)
 
     const toggleButton = (
       <Button key="toggle" label={expanded ? 'Hide' : 'Show'} onPress={() => void toggle()} />
@@ -240,7 +247,7 @@ export const register: Register = (on, options) => {
     const line = cacheTimeline(isWorking ? 0 : sinceRequest, ttlMs, BAR)
     const timelineLeft = `warm ${cacheTtl}`
     const timelineRight = isWorking
-      ? 'request in flight'
+      ? 'busy'
       : heat === 'warm' && sinceRequest !== null
         ? `cold in ${duration(ttlMs - sinceRequest)}`
         : heat === 'cold' && sinceRequest !== null
@@ -313,7 +320,7 @@ export const register: Register = (on, options) => {
           <Box flexDirection="column" gap="xs">
             <Box flexDirection="row" gap="xs" alignItems="center">
               {badge}
-              {caption(isWorking ? 'REQUEST' : 'IDLE')}
+              {caption(isWorking ? 'RUNNING' : 'IDLE')}
             </Box>
             <Text size="title" weight="bold" tabular>
               {idleText}
