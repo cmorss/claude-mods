@@ -1,0 +1,21 @@
+usage-band/hooks/register.tsx
+  s_8cad2d86931f73::t_25f382c7dcbba1 239-246
+usage-band/hooks/usage-band.test.tsx
+  s_8cad2d86931f73::t_0a9419a7336515 51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a69da04f24f83f340a19ebb56839eb854dbb9dbd",
+  "prompts": {},
+  "sessions": {
+    "s_8cad2d86931f73": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "be60143d-3c42-4a18-9e54-c47522d59fd8",
+        "model": "unknown"
+      },
+      "human_author": "Charlie Morss <charlie.morss@gmail.com>"
+    }
+  }
+}
