@@ -1,0 +1,23 @@
+usage-band/hooks/format.test.ts
+  s_8cad2d86931f73::t_1f64437a4301eb 3,78-84,86-89
+usage-band/hooks/format.ts
+  s_8cad2d86931f73::t_7b4d838baf541c 146-150,152,162
+usage-band/hooks/register.tsx
+  s_8cad2d86931f73::t_ab25468b3173e0 15,264,267-271,274-275
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9cde17ed47da36fe73305ba2d8d59fd315d645b1",
+  "prompts": {},
+  "sessions": {
+    "s_8cad2d86931f73": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "be60143d-3c42-4a18-9e54-c47522d59fd8",
+        "model": "unknown"
+      },
+      "human_author": "Charlie Morss <charlie.morss@gmail.com>"
+    }
+  }
+}
