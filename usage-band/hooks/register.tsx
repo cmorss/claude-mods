@@ -1,5 +1,5 @@
 import { atom, read, update } from 'claude-code'
-import type { EngineInterface, Register, SessionUsage } from 'claude-code'
+import type { EngineInterface, Register, RenderElement, SessionUsage } from 'claude-code'
 
 import type { CacheMark, CacheTtl, Usage } from '../types'
 import {
@@ -123,7 +123,9 @@ export const register: Register = (on, options) => {
   })
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
-    if (e.props.hasSurvey) return next(e)
+    // A survey holds the band while one is up (the app's next-step box is one): the band is
+    // drawn above it rather than giving way, so it stays while the person can type.
+    const below = e.props.hasSurvey ? await next(e) : null
 
     const u = await read($, usage)
     const m = await read($, mark)
@@ -133,6 +135,15 @@ export const register: Register = (on, options) => {
     const isWorking = e.props.isWorking
 
     const { Box, Text, Button } = $.ui.resolve(e)
+    const wrap = (band: RenderElement): RenderElement =>
+      below === null ? (
+        band
+      ) : (
+        <Box flexDirection="column" gap="sm">
+          {band}
+          {below}
+        </Box>
+      )
 
     const toggle = async () => {
       const nextExpanded = !(await read($, isExpanded))
@@ -187,7 +198,7 @@ export const register: Register = (on, options) => {
 
     if (!expanded) {
       // The button keeps its place at the right end: the figures wrap, it never does.
-      return (
+      return wrap(
         <Box flexDirection="row" gap="md" alignItems="flex-start" justifyContent="space-between">
           <Box flexDirection="row" gap="md" alignItems="center" flexWrap="wrap" flexGrow={1} flexShrink={1}>
             <Text weight="bold">USAGE</Text>
@@ -243,7 +254,7 @@ export const register: Register = (on, options) => {
 
     const narrow = e.props.bodyColumns < 96
 
-    return (
+    return wrap(
       <Box flexDirection="column" gap="sm">
         <Box flexDirection="row" gap="md" alignItems="flex-start" justifyContent="space-between">
           <Box flexDirection="row" gap="md" alignItems="center" flexWrap="wrap" flexGrow={1} flexShrink={1}>

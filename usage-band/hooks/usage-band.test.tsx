@@ -106,14 +106,23 @@ test('a measurement from the engine moves the figures', async ($, on) => {
   await ui.unmount()
 })
 
-test('a survey keeps the band', async ($, on) => {
+test('the band is drawn above a survey, not instead of it', async ($, on) => {
   mock.clock(on, { now: NOW })
+  mock.store(on)
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  on('session.usage', () => ({ value: USAGE }))
+  on('session.model', () => ({ value: 'claude-opus-5-5' }))
   on('ui.render', ($, e) => {
     const { Text } = $.ui.resolve(e)
     return <Text>survey</Text>
   })
-  const ui = await $.ui.mount({ ...BAND, surface: 'desktop', props: { ...BAND.props, hasSurvey: true } })
-  expect((await ui.find({ type: 'Text', text: /survey/ }))?.text).toBe('survey')
-  expect(await ui.find({ type: 'Text', text: /USAGE/ })).toBeUndefined()
-  await ui.unmount()
+  await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: true })
+
+  for (const surface of ['terminal', 'desktop'] as const) {
+    const ui = await $.ui.mount({ ...BAND, surface, props: { ...BAND.props, hasSurvey: true } })
+    expect((await ui.find({ type: 'Text', text: /survey/ }))?.text).toBe('survey')
+    expect(await ui.find({ type: 'Text', text: /USAGE/ })).toBeDefined()
+    expect(await ui.find({ type: 'Text', text: /45% left/ })).toBeDefined()
+    await ui.unmount()
+  }
 })
