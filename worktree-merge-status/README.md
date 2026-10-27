@@ -18,3 +18,13 @@ conflict), and record the outcome. Install them into a repo from inside it:
 
 With the [usage-band](../usage-band) mod loaded too, its band shows `✅ Git` or `❌ Conflicts` and
 opens this pane when pressed.
+
+## Install
+
+```bash
+claude plugin marketplace add cmorss/claude-mods
+```
+
+```bash
+claude plugin install worktree-merge-status@claude-mods
+```

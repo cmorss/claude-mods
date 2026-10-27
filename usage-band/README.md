@@ -24,7 +24,17 @@ The figures come from the engine (`$.session.usage()` and `session.measure`), so
 
 The expand/collapse choice is remembered across sessions.
 
-## Running it
+## Install
+
+```bash
+claude plugin marketplace add cmorss/claude-mods
+```
+
+```bash
+claude plugin install usage-band@claude-mods
+```
+
+## Running it from a checkout
 
 From this folder, in every session: add it to `CLAUDE_CODE_PLUGIN_DIRS` in the `env` block of `~/.claude/settings.json`, or start one session with `claude --plugin-dir <this folder>`.
 

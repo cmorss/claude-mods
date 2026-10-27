@@ -1,6 +1,6 @@
 {
   "name": "claude-mods",
-  "description": "Claude Code mods for working in git worktrees: a terminal and a file tree for the worktree a conversation works in",
+  "description": "Claude Code mods for working in git worktrees and watching usage: a terminal, a file tree and a merge status pane for the worktrees, and a usage band above the prompt",
   "owner": {
     "name": "Charlie Morss"
   },
