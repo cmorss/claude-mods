@@ -39,4 +39,4 @@ Then start a new session or type `/reload-plugins`. It is installed for you in e
 
 ## Develop
 
-`hooks/register.ts` is the command; `hooks/terminal.ts` holds the argument, path and tab rules; `hooks/worktree.ts` decides which worktree is the conversation's (the same file is in the worktree-files mod: keep the two alike). Run the tests with `claude plugin test <this folder>` and check it with `claude plugin validate <this folder>`.
+`hooks/register.ts` is the command; `hooks/terminal.ts` holds the argument, path and tab rules; `hooks/worktree.ts` decides which worktree is the conversation's. Run the tests with `claude plugin test <this folder>` and check it with `claude plugin validate <this folder>`.

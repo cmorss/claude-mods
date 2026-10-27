@@ -1,13 +1,12 @@
 # claude-mods
 
-Four [Claude Code](https://claude.com/claude-code) mods for working in git worktrees and keeping an eye on usage.
+Three [Claude Code](https://claude.com/claude-code) mods for working in git worktrees and keeping an eye on usage.
 
-Claude often does its work in a git worktree (a second checkout of the same repository, for example under `.claude/worktrees/<name>`) while the session itself stays in the main checkout. Three of these mods find the worktree the current conversation is working in, or the state of all of them, so you can look without hunting for the folder. The fourth is a band above the prompt that shows your usage.
+Claude often does its work in a git worktree (a second checkout of the same repository, for example under `.claude/worktrees/<name>`) while the session itself stays in the main checkout. Two of these mods help you look at your worktrees without hunting for the folder: a terminal in the one the current conversation is working in, and a pane with the state of all of them. The third is a band above the prompt that shows your usage.
 
 | Plugin | Adds | What it does |
 | --- | --- | --- |
 | `worktree-terminal` | `/terminal` | Shows the Terminal-panel tab already open in the conversation's worktree, or opens one there. `/terminal -n` always opens a new tab; `/terminal <path>` uses another folder. |
-| `worktree-files` | `/worktree-files` | Opens the [filetree](https://github.com/data-goblin/claude-code-filetree) pane on the conversation's worktree. `/worktree-files <name or path>` opens another. |
 | `worktree-merge-status` | `/merge-status` | A pane with what has merged into local `main`, which worktrees are not in `main` yet, and which would conflict with it, each with a button that opens the Claude session working in that worktree. It opens by itself, with a toast, when `main` moves, a branch diverges, or a worktree is left mid-merge. |
 | `usage-band` | a band above the prompt | Shows the 5-hour and 7-day usage windows, whether the prompt cache is warm or cold and for how long, the context the next message re-sends, and what that costs on each model. Expands from one row; shows the merge status indicator when `worktree-merge-status` is loaded. |
 
@@ -17,7 +16,6 @@ Each plugin installs on its own: take any of them.
 
 - Claude Code 2.1.287 or newer (mods need it). Check with `claude --version`.
 - `/terminal` and `/merge-status` use the Claude desktop app (the Terminal panel; session links), so they work in its Code sessions.
-- `/worktree-files` needs the filetree mod (install steps below).
 - `worktree-merge-status` reads git, so it needs a repository with a local `main`. Its optional git hooks (below) keep `main` up to date.
 - `usage-band` works in the terminal and in the desktop app.
 
@@ -38,10 +36,6 @@ Run these in a terminal (macOS Terminal, iTerm, the desktop app's Terminal panel
    ```
 
    ```bash
-   claude plugin install worktree-files@claude-mods
-   ```
-
-   ```bash
    claude plugin install worktree-merge-status@claude-mods
    ```
 
@@ -49,17 +43,7 @@ Run these in a terminal (macOS Terminal, iTerm, the desktop app's Terminal panel
    claude plugin install usage-band@claude-mods
    ```
 
-3. For `/worktree-files`, also install the filetree mod if you don't have it:
-
-   ```bash
-   claude plugin marketplace add data-goblin/claude-code-filetree
-   ```
-
-   ```bash
-   claude plugin install filetree@claude-code-filetree
-   ```
-
-4. Start a new Claude Code session, or type `/reload-plugins` in an open one. The commands then show up when you type `/`.
+3. Start a new Claude Code session, or type `/reload-plugins` in an open one. The commands then show up when you type `/`.
 
 Plugins installed this way are installed for you (user scope): they load in every session, in every project, and after Claude Code restarts.
 
@@ -71,24 +55,19 @@ Inside a Claude Code terminal session you can do the same with `/plugin`, which 
 /terminal                 the terminal for this conversation's worktree (opens one if there is none)
 /terminal -n              a new terminal there, even if one is open        (also --new)
 /terminal <path>          the same for another folder: a worktree's name, ~/..., absolute or relative
-/worktree-files           the file tree of this conversation's worktree
-/worktree-files <name>    the file tree of another worktree, by its folder name, or any path
 /merge-status             open or close the merge status pane
 ```
 
 ### Which worktree is "this conversation's"
 
-`/terminal` and `/worktree-files` pick, in order:
-### Which worktree is "this conversation's"
-
-Both commands pick, in order:
+`/terminal` picks, in order:
 
 1. the worktree the session itself runs in;
 2. the newest worktree the conversation created or entered (`git worktree add`, or Claude's EnterWorktree tool);
 3. the newest worktree the conversation ran commands or edited files in;
 4. the repository's only linked worktree, if it has just one.
 
-When none of these applies, `/terminal` opens in the repository's own folder (or the session's folder outside a repository), and `/worktree-files` lists the worktrees as commands to pick from.
+When none of these applies, `/terminal` opens in the repository's own folder (or the session's folder outside a repository).
 
 ### Merge status
 
@@ -133,10 +112,6 @@ claude plugin uninstall worktree-terminal@claude-mods
 ```
 
 ```bash
-claude plugin uninstall worktree-files@claude-mods
-```
-
-```bash
 claude plugin uninstall worktree-merge-status@claude-mods
 ```
 
@@ -148,7 +123,7 @@ claude plugin uninstall usage-band@claude-mods
 
 ## Develop
 
-Each plugin is a folder: `.claude-plugin/plugin.json` names it and `hooks/register.ts(x)` is the command or band. In `worktree-terminal` and `worktree-files`, `hooks/worktree.ts` decides which worktree is the conversation's; that file is the same in both (they cannot import from each other), so keep the copies alike.
+Each plugin is a folder: `.claude-plugin/plugin.json` names it and `hooks/register.ts(x)` is the command or band. In `worktree-terminal`, `hooks/worktree.ts` decides which worktree is the conversation's.
 
 To work on one against your own checkout, install from the folder instead of from GitHub:
 

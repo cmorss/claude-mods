@@ -2,8 +2,7 @@ import type { SessionMessage } from 'claude-code';
 
 /**
  * Which git worktree belongs to this conversation. Pure: register.ts reads git and the transcript,
- * then asks here. The same file is in the worktree-files and worktree-terminal mods; keep the
- * two copies alike.
+ * then asks here.
  */
 
 /** One linked worktree of the repository. */

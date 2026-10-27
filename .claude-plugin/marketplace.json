@@ -1,6 +1,6 @@
 {
   "name": "claude-mods",
-  "description": "Claude Code mods for working in git worktrees and watching usage: a terminal, a file tree and a merge status pane for the worktrees, and a usage band above the prompt",
+  "description": "Claude Code mods for working in git worktrees and watching usage: a terminal and a merge status pane for the worktrees, and a usage band above the prompt",
   "owner": {
     "name": "Charlie Morss"
   },
@@ -9,11 +9,6 @@
       "name": "worktree-terminal",
       "source": "./worktree-terminal",
       "description": "/terminal: show or open a Terminal-panel tab in the conversation's git worktree (Claude desktop app)"
-    },
-    {
-      "name": "worktree-files",
-      "source": "./worktree-files",
-      "description": "/worktree-files: open the filetree pane on the conversation's git worktree"
     },
     {
       "name": "usage-band",
