@@ -1,0 +1,23 @@
+usage-band/README.md
+  s_920ea8140a8dc7::t_737c2db73907b0 8,11,25,35-40
+usage-band/hooks/register.tsx
+  s_920ea8140a8dc7::t_6f4e45887d6756 34-39,72-89,244-264,286-289,372
+usage-band/hooks/usage-band.test.tsx
+  s_920ea8140a8dc7::t_41324bb82cf2fd 133-175
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "079a50d141cf3e1f430e2bc2d11bd34a678d6dca",
+  "prompts": {},
+  "sessions": {
+    "s_920ea8140a8dc7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c2cd8259-e46b-4b88-81ee-67a58073a977",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Charlie Morss <charlie.morss@gmail.com>"
+    }
+  }
+}
