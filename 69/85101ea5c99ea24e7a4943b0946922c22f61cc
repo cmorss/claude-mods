@@ -1,0 +1,25 @@
+.claude-plugin/marketplace.json
+  s_5562a36187434b::t_83a76c90854d9b 3
+README.md
+  s_5562a36187434b::t_b15998ae7523b1 3,5,7,9-12,14,19,21-22,44-51,76,81-83,93-120,139-146,151
+usage-band/README.md
+  s_5562a36187434b::t_cbad6bab2564d9 27-37
+worktree-merge-status/README.md
+  s_5562a36187434b::t_85588baafe5173 21-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6985101ea5c99ea24e7a4943b0946922c22f61cc",
+  "prompts": {},
+  "sessions": {
+    "s_5562a36187434b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "22ef853f-6577-4213-adc4-1296f4f4a2ca",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Charlie Morss <charlie.morss@gmail.com>"
+    }
+  }
+}
