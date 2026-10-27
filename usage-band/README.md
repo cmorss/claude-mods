@@ -5,10 +5,10 @@ A band above the prompt that shows where your Claude usage stands, in the termin
 Compact, one row:
 
 ```
-USAGE  7D ●●●●●·····  45% left · 3d 10h   5H ●●●●●●●●●· 89% left · resetting   [COLD] 11h 32m · next $4.78   [Show]
+USAGE  7D ●●●●●·····  45% left · 3d 10h   5H ●●●●●●●●●· 89% left · resetting   [COLD] 11h 32m · next $4.78   [⌄]
 ```
 
-Expanded, after **Show**:
+Expanded, after the chevron (**⌄**):
 
 - **The windows**: the 5-hour and 7-day rate-limit windows (and a gateway's spend limit) as the last API response reported them, with how much is left and when each resets, plus what this session has cost so far.
 - **The cache**: whether the prompt cache is warm or cold, how long the session has been idle, and how long the cache holds or how long ago it went cold. The timer runs from the start of the last main-thread request, as the API's does.
@@ -22,7 +22,7 @@ The figures come from the engine (`$.session.usage()` and `session.measure`), so
 - **Cache TTL** (`cacheTtl`): `1h` or `5m`, used when neither the `promptCacheTtl` setting nor a model switch says which. Default `1h`, the TTL of a Claude subscription.
 - **Redraw every** (`tickSeconds`): how often the idle timer redraws. Default 30.
 
-The Show/Hide choice is remembered across sessions.
+The expand/collapse choice is remembered across sessions.
 
 ## Running it
 
@@ -32,3 +32,9 @@ From this folder, in every session: add it to `CLAUDE_CODE_PLUGIN_DIRS` in the `
 claude plugin validate .
 claude plugin test .
 ```
+
+## Merge status
+
+With the `worktree-merge-status` mod loaded, the band also shows whether any worktree conflicts with
+`main` (`❌ Conflicts`, `⚠️ Git` when branches are waiting to merge, `✅ Git`). Pressing it opens that mod's merge status
+pane, and again closes it. Without the mod the indicator is absent.

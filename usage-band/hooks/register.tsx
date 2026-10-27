@@ -31,6 +31,12 @@ import {
 const PLUGIN = 'usage-band'
 const STORE_EXPANDED = 'isExpanded'
 
+// The worktree-merge-status mod's own value, read by name: this mod runs without it, and the
+// indicator is simply absent then.
+const MERGE_PANE = 'merge-status'
+const merge = atom({ plugin: 'worktree-merge-status', key: 'status' } as never, null as never)
+type MergeStatus = { checkedAt: number; attention: { kind: string }[] } | null
+
 const usage = atom({ plugin: 'usage-band', key: 'usage' } as const, null)
 const mark = atom({ plugin: 'usage-band', key: 'mark' } as const, null)
 const isExpanded = atom({ plugin: 'usage-band', key: 'isExpanded' } as const, false)
@@ -61,6 +67,24 @@ async function refreshUsage($: EngineInterface) {
 
 async function setMark($: EngineInterface, patch: Partial<CacheMark>) {
   await update($, mark, (m) => ({ requestAt: null, responseAt: null, model: null, ...m, ...patch }))
+}
+
+async function readMerge($: EngineInterface): Promise<{ conflicts: number; pending: number } | null> {
+  try {
+    const status = (await read($, merge)) as unknown as MergeStatus
+    if (status === null || status === undefined || !(status.checkedAt > 0)) return null
+    const conflicts = status.attention.filter((a) => a.kind === 'conflict' || a.kind === 'predicted').length
+    return { conflicts, pending: status.attention.length - conflicts }
+  } catch {
+    return null
+  }
+}
+
+// A press opens the merge status pane, or closes it while it is up.
+async function toggleMergePane($: EngineInterface) {
+  const isShown = (await $.ui.panes()).some((p) => p.id === MERGE_PANE && p.isShown)
+  if (isShown) await $.ui.close({ id: MERGE_PANE })
+  else await $.ui.open({ id: MERGE_PANE, title: 'Merge status' })
 }
 
 function isTtl(value: unknown): value is CacheTtl {
@@ -217,9 +241,27 @@ export const register: Register = (on, options) => {
         ? '—'
         : duration(idleMs)
 
-    const toggleButton = (
-      <Button key="toggle" label={expanded ? 'Hide' : 'Show'} onPress={() => void toggle()} />
-    )
+    // A chevron, not a word: the band's right end keeps its room for the figures.
+    const toggleButton = <Button key="toggle" label={expanded ? '⌃' : '⌄'} onPress={() => void toggle()} />
+
+    const mergeState = await readMerge($)
+    // Emoji carry their own colour, which a Button's text does not take; short, for the compact row.
+    const mergeLabel =
+      mergeState === null
+        ? null
+        : mergeState.conflicts > 0
+          ? { text: '❌ Conflicts', color: 'error' }
+          : mergeState.pending > 0
+            ? { text: '⚠️ Git', color: 'warning' }
+            : { text: '✅ Git', color: 'success' }
+    const mergeButton =
+      mergeLabel === null ? null : (
+        <Button key="merge" plain onPress={() => void toggleMergePane($)}>
+          <Text color={mergeLabel.color} weight="semibold">
+            {mergeLabel.text}
+          </Text>
+        </Button>
+      )
 
     if (!expanded) {
       // The button keeps its place at the right end: the figures wrap, it never does.
@@ -241,7 +283,10 @@ export const register: Register = (on, options) => {
               ) : null}
             </Box>
           </Box>
-          <Box flexShrink={0}>{toggleButton}</Box>
+          <Box flexDirection="row" gap="sm" alignItems="center" flexShrink={0}>
+            {mergeButton}
+            {toggleButton}
+          </Box>
         </Box>
       )
     }
@@ -324,6 +369,7 @@ export const register: Register = (on, options) => {
                 <Text weight="semibold">SESSION</Text> {money(u.costUsd)}
               </Text>
             ) : null}
+            {mergeButton}
             {toggleButton}
           </Box>
         </Box>

@@ -130,3 +130,46 @@ test('the band is drawn above a survey, not instead of it', async ($, on) => {
     await ui.unmount()
   }
 })
+
+test('the band shows the merge status of the worktree-merge-status mod, and opens its pane', async ($, on) => {
+  mock.clock(on, { now: NOW })
+  mock.store(on)
+  const opened: string[] = []
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  on('session.usage', () => ({ value: USAGE }))
+  on('session.model', () => ({ value: 'claude-opus-5-5' }))
+  on('state.get', (_, e) => ({
+    value:
+      (e.plugin as string) === 'worktree-merge-status'
+        ? { value: { checkedAt: 1, attention: [{ kind: 'predicted' }, { kind: 'blocked' }] }, version: 1 }
+        : { value: undefined, version: 0 },
+  }))
+  on('ui.panes', () => ({ value: [] }))
+  on('ui.open', (_, e) => {
+    opened.push(e.id)
+    return { value: { isPlaced: true } }
+  })
+
+  await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: true })
+
+  const ui = await $.ui.mount({ ...BAND, surface: 'desktop' })
+  expect(await ui.find({ type: 'Text', text: /❌ Conflicts$/ })).toBeDefined()
+  await ui.press({ key: 'merge' })
+  expect(opened).toEqual(['merge-status'])
+  await ui.unmount()
+})
+
+test('without the merge mod the band shows no merge indicator', async ($, on) => {
+  mock.clock(on, { now: NOW })
+  mock.store(on)
+  on('session.start', (_, e) => ({ cwd: e.cwd }))
+  on('session.usage', () => ({ value: USAGE }))
+  on('session.model', () => ({ value: 'claude-opus-5-5' }))
+
+  await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: true })
+
+  const ui = await $.ui.mount({ ...BAND, surface: 'desktop' })
+  expect(await ui.find({ key: 'merge' })).toBeUndefined()
+  expect(await ui.find({ key: 'toggle' })).toBeDefined()
+  await ui.unmount()
+})
