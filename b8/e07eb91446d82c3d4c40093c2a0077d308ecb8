@@ -1,0 +1,39 @@
+.claude-plugin/marketplace.json
+  s_920ea8140a8dc7::t_241fe1c152c754 22-26
+worktree-merge-status/.claude-plugin/plugin.json
+  s_920ea8140a8dc7::t_86a5b37fb4e95a 1-16
+worktree-merge-status/README.md
+  s_920ea8140a8dc7::t_d1f112a701540b 1-20
+worktree-merge-status/git-hooks/install.sh
+  s_920ea8140a8dc7::t_048b376121931f 1-20
+worktree-merge-status/git-hooks/post-commit
+  s_920ea8140a8dc7::t_86ed561cf56773 1-3
+worktree-merge-status/git-hooks/post-merge
+  s_920ea8140a8dc7::t_833f9cf335f616 1-3
+worktree-merge-status/git-hooks/worktree-autosync.sh
+  s_920ea8140a8dc7::t_65e4a398276f40 1-126
+worktree-merge-status/hooks/hooks.json
+  s_920ea8140a8dc7::t_c91009450453e0 1
+worktree-merge-status/hooks/register.test.tsx
+  s_920ea8140a8dc7::t_8816e0bc5c5b32 1-123
+worktree-merge-status/hooks/register.tsx
+  s_920ea8140a8dc7::t_eacfa86a871d33 1-506
+worktree-merge-status/types/index.d.ts
+  s_920ea8140a8dc7::t_138df2d30496ff 1-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b8e07eb91446d82c3d4c40093c2a0077d308ecb8",
+  "prompts": {},
+  "sessions": {
+    "s_920ea8140a8dc7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c2cd8259-e46b-4b88-81ee-67a58073a977",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Charlie Morss <charlie.morss@gmail.com>"
+    }
+  }
+}
