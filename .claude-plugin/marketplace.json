@@ -19,6 +19,11 @@
       "name": "usage-band",
       "source": "./usage-band",
       "description": "A band above the prompt: usage windows, prompt-cache warmth and age, context to re-cache, next message cost per model"
+    },
+    {
+      "name": "worktree-merge-status",
+      "source": "./worktree-merge-status",
+      "description": "/merge-status: a pane with what merged into local main and which git worktrees conflict with it, with a link to each worktree's session"
     }
   ]
 }

@@ -1,0 +1,3 @@
+#!/bin/bash
+# A real (non-fast-forward) `git merge`, and `git pull`, fire post-merge but not post-commit.
+exec "$(dirname "$0")/worktree-autosync.sh"

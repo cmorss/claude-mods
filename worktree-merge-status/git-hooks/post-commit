@@ -1,0 +1,3 @@
+#!/bin/bash
+# Fires for `git commit` (including cherry-pick and revert).
+exec "$(dirname "$0")/worktree-autosync.sh"

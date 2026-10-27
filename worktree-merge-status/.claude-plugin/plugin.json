@@ -1,0 +1,16 @@
+{
+  "name": "worktree-merge-status",
+  "version": "0.1.0",
+  "description": "/merge-status: a pane with what merged into local main and which git worktrees conflict with it, and a link to each worktree's session (Claude desktop app)",
+  "author": {
+    "name": "Charlie Morss"
+  },
+  "license": "MIT",
+  "keywords": [
+    "worktree",
+    "git",
+    "merge",
+    "conflicts"
+  ],
+  "types": "./types/index.d.ts"
+}
