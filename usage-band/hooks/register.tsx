@@ -8,11 +8,13 @@ import {
   BAR,
   FAMILIES,
   GLYPH_INK,
+  LEFT_INK,
   PRICES,
   TTL_MS,
   YOU_INK,
   badgeSvg,
   barDots,
+  dotsSvg,
   cacheTimeline,
   duration,
   gridSvg,
@@ -42,7 +44,7 @@ const mark = atom({ plugin: 'usage-band', key: 'mark' } as const, null)
 const isExpanded = atom({ plugin: 'usage-band', key: 'isExpanded' } as const, false)
 const ttl = atom({ plugin: 'usage-band', key: 'ttl' } as const, '1h')
 
-const DOTS = 10
+const DOTS = 5
 const DOT = '●'
 const GAP_DOT = '·'
 
@@ -206,12 +208,18 @@ export const register: Register = (on, options) => {
           <Text weight="semibold" dimColor>
             {windowLabel(w.kind)}
           </Text>
-          <Text color={color} size="caption">
-            {DOT.repeat(n)}
-          </Text>
-          <Text dimColor size="caption">
-            {GAP_DOT.repeat(DOTS - n)}
-          </Text>
+          {e.surface !== 'terminal' && 'Svg' in table ? (
+            <table.Svg source={dotsSvg(n, DOTS, LEFT_INK[color])} alt={`${left}% left`} height={6} />
+          ) : (
+            <>
+              <Text color={color} size="caption">
+                {DOT.repeat(n)}
+              </Text>
+              <Text dimColor size="caption">
+                {GAP_DOT.repeat(DOTS - n)}
+              </Text>
+            </>
+          )}
           <Text color={color} weight="semibold" tabular>
             {left}% left
           </Text>
@@ -264,11 +272,11 @@ export const register: Register = (on, options) => {
       )
 
     if (!expanded) {
-      // The buttons keep their place at the right end: the figures wrap onto a second line when the
-      // row is narrow, so the cache badge is never clipped; the buttons never wrap.
+      // One row: the window bars are small enough that the cache badge fits beside them; the buttons
+      // keep their place at the right end.
       return wrap(
         <Box flexDirection="row" gap="sm" alignItems="center" justifyContent="space-between">
-          <Box flexDirection="row" gap="sm" alignItems="center" flexWrap="wrap" flexGrow={1} flexShrink={1}>
+          <Box flexDirection="row" gap="sm" alignItems="center" flexWrap="nowrap" flexGrow={1} flexShrink={1} overflow="hidden">
             <Text weight="bold">USAGE</Text>
             {windows.length > 0 ? windows : <Text dimColor>no usage windows yet</Text>}
             <Box flexDirection="row" gap="xs" alignItems="center" flexShrink={0}>

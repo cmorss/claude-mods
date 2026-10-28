@@ -169,5 +169,20 @@ export function gridSvg(lit: number, ink: string): string {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${dots}</svg>`
 }
 
+export const LEFT_INK = { success: '#1f9a45', warning: '#d98a00', error: '#d6372b' }
+
+/** A row of small dots, `lit` of `of` in `ink`, the rest faint: a window's bar, kept narrow. */
+export function dotsSvg(lit: number, of: number, ink: string): string {
+  const step = 6
+  const r = 2.2
+  const w = of * step
+  let dots = ''
+  for (let i = 0; i < of; i += 1) {
+    const isLit = i < lit
+    dots += `<circle cx="${i * step + step / 2}" cy="${step / 2}" r="${r}" fill="${isLit ? ink : '#9aa0a6'}" opacity="${isLit ? 1 : 0.35}"/>`
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${step}" viewBox="0 0 ${w} ${step}">${dots}</svg>`
+}
+
 export const YOU_INK = { fill: '#8fd6ea', ink: '#0a2a33' }
 export const GLYPH_INK = { you: '#3b9ddd', other: '#9aa0a6' }
