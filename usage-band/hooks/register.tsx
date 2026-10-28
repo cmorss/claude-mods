@@ -264,10 +264,11 @@ export const register: Register = (on, options) => {
       )
 
     if (!expanded) {
-      // The button keeps its place at the right end: the figures wrap, it never does.
+      // The buttons keep their place at the right end: the figures wrap onto a second line when the
+      // row is narrow, so the cache badge is never clipped; the buttons never wrap.
       return wrap(
         <Box flexDirection="row" gap="sm" alignItems="center" justifyContent="space-between">
-          <Box flexDirection="row" gap="sm" alignItems="center" flexWrap="nowrap" flexGrow={1} flexShrink={1} overflow="hidden">
+          <Box flexDirection="row" gap="sm" alignItems="center" flexWrap="wrap" flexGrow={1} flexShrink={1}>
             <Text weight="bold">USAGE</Text>
             {windows.length > 0 ? windows : <Text dimColor>no usage windows yet</Text>}
             <Box flexDirection="row" gap="xs" alignItems="center" flexShrink={0}>
