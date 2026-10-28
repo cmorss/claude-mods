@@ -1,0 +1,21 @@
+usage-band/hooks/format.ts
+  s_e59039dc800efb::t_94e5febd1de7c5 172-186
+usage-band/hooks/register.tsx
+  s_e59039dc800efb::t_1f98ee0868c4e1 11,17,47,211-222,275-276,279
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9870435becafc66b532e649cada33603e183d277",
+  "prompts": {},
+  "sessions": {
+    "s_e59039dc800efb": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4b9b4124-0acb-4b5a-9326-e9ecfc8430ef",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "Charlie Morss <charlie.morss@gmail.com>"
+    }
+  }
+}
